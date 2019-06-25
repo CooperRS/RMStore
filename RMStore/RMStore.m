@@ -761,7 +761,9 @@ typedef void (^RMStoreSuccessBlock)();
     
     if (self.successBlock)
     {
-        self.successBlock(products, invalidProductIdentifiers);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.successBlock(products, invalidProductIdentifiers);
+        });
     }
     NSDictionary *userInfo = @{RMStoreNotificationProducts: products, RMStoreNotificationInvalidProductIdentifiers: invalidProductIdentifiers};
     [[NSNotificationCenter defaultCenter] postNotificationName:RMSKProductsRequestFinished object:self.store userInfo:userInfo];
@@ -777,7 +779,9 @@ typedef void (^RMStoreSuccessBlock)();
     RMStoreLog(@"products request failed with error %@", error.debugDescription);
     if (self.failureBlock)
     {
-        self.failureBlock(error);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.failureBlock(error);
+        });
     }
     NSDictionary *userInfo = nil;
     if (error)
